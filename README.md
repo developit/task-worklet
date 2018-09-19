@@ -1,5 +1,7 @@
 # Task Worklet
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/developit/task-worklet.svg?token=829d75c2d5a9be5185788e5a85ec52527d1757f305f4c08b1ae6805370062c78&ts=1537391462423)](https://greenkeeper.io/)
+
 A polyfill for Task Worklet - a proposed API for defining and invoking coordinated, threadpooled background tasks with minimal transfer overhead.
 
 ## Motivation
