@@ -1,0 +1,48 @@
+{
+  "name": "task-worklet",
+  "version": "0.1.0",
+  "description": "Streamlined processing of tasks in a shared threadpool.",
+  "source": "src/index.mjs",
+  "main": "dist/task-worklet.js",
+  "umd:main": "dist/task-worklet.js",
+  "module": "dist/task-worklet.mjs",
+  "scripts": {
+    "build": "microbundle -f umd,es && microbundle -f iife src/polyfill.mjs -o polyfill/index.js",
+    "test": "eslint \"{src,test}/**/*.test.{mjs,js}\" && karmatic"
+  },
+  "files": [
+    "dist",
+    "src",
+    "polyfill.js"
+  ],
+  "eslintConfig": {
+    "extends": "google",
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module"
+    },
+    "rules": {
+      "require-jsdoc": 0,
+      "max-len": 0
+    }
+  },
+  "repository": "GoogleChromeLabs/task-worklet",
+  "keywords": [
+    "tasks",
+    "task worklet",
+    "TaskWorklet",
+    "threads",
+    "multithreading"
+  ],
+  "author": "Jason Miller <developit@google.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/GoogleChromeLabs/task-worklet",
+  "devDependencies": {
+    "eslint": "^5.2.0",
+    "eslint-config-google": "^0.9.1",
+    "file-loader": "^2.0.0",
+    "karmatic": "^1.2.0",
+    "microbundle": "^0.6.0",
+    "webpack": "^4.16.4"
+  }
+}
