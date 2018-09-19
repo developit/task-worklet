@@ -39,7 +39,7 @@
   "homepage": "https://github.com/GoogleChromeLabs/task-worklet",
   "devDependencies": {
     "eslint": "^5.2.0",
-    "eslint-config-google": "^0.9.1",
+    "eslint-config-google": "^0.10.0",
     "file-loader": "^2.0.0",
     "karmatic": "^1.2.0",
     "microbundle": "^0.6.0",
