@@ -10,6 +10,8 @@ Task Worklet attempts to define a highly ergonomic way to offload all of the wor
 
 In addition to ergonomics, the design of Task Worklet allows for an implicit data flow graph to be formed based on how tasks are linked together to form dependencies on one another.  When combined with pooling and a centralized registry for task processors, this enables an algorithm to distribute work across multiple threads, automatically maximizing concurrency and minimizing transfer overhead.
 
+**Demo:** [Realtime JS compilation, bundling & compression](https://jsfiddle.net/developit/wfLsxgy0/179/)
+
 ## Usage
 
 First, install the script via `npm install task-worklet` or grab it from [unpkg](https://unpkg.com/task-worklet).
