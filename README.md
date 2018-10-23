@@ -35,11 +35,11 @@ queue.addModule('/fetch-worklet.js').then(() => { /* loaded */ })
 
 const task = queue.postTask('fetch', 'https://example.com/data.json');
 
-console.log(task.status);  // pending
+console.log(task.state);  // pending
 
 await sleep(1);
 
-console.log(task.status);  // scheduled
+console.log(task.state);  // scheduled
 
 // now we'll ask for the result back. This bumps up the priority
 // of the task and sends its result to the main thread once complete:

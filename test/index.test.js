@@ -11,10 +11,52 @@
  * limitations under the License.
  */
 
-import TaskWorklet from '../src/index.mjs';
+import TaskQueue from '../src/index.mjs';
 
-describe('TaskWorklet', () => {
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+describe('TaskQueue', () => {
   it('should pass smoketest', async () => {
-    expect(TaskWorklet).toBe(expect.any(Function));
+    expect(typeof TaskQueue).toBe('function');
+  });
+
+  describe('task execution and chaining', () => {
+    let queue;
+
+    it('should be instantiable via a Blob URL', async () => {
+      queue = new TaskQueue();
+      await queue.addModule(URL.createObjectURL(new Blob([`
+        registerTask('add', class {
+          process(a, b) {
+            return a + b;
+          }
+        })
+      `])));
+    });
+
+    it('should execute a single task', async () => {
+      const sum1 = queue.postTask('add', 1, 2);
+
+      await sleep(1);
+      expect(sum1.state).toBe('scheduled');
+
+      const result = await sum1.result;
+      expect(sum1.state).toBe('fulfilled');
+      expect(result).toBe(3);
+    });
+
+    it('should execute tasks with task dependencies', async () => {
+      const sum1 = queue.postTask('add', 1, 2);
+      const sum2 = queue.postTask('add', sum1, 2);
+
+      await sleep(1);
+      expect(sum1.state).toBe('scheduled');
+      expect(sum2.state).toBe('scheduled');
+
+      const result = await sum2.result;
+      expect(sum1.state).toBe('fulfilled');
+      expect(sum2.state).toBe('fulfilled');
+      expect(result).toBe(5);
+    });
   });
 });
