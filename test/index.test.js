@@ -13,8 +13,6 @@
 
 import TaskWorklet from '../src/index.mjs';
 
-// const trim = ([str]) => str.replace(/(^|\n+)\s+/g, '$1').trim();
-
 describe('TaskWorklet', () => {
   it('should pass smoketest', async () => {
     expect(TaskWorklet).toBe(expect.any(Function));
