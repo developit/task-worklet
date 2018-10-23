@@ -23,7 +23,10 @@
     },
     "rules": {
       "require-jsdoc": 0,
-      "max-len": 0
+      "max-len": 0,
+      "guard-for-in": 0,
+      "new-cap": 0,
+      "prefer-rest-params": 0
     }
   },
   "repository": "GoogleChromeLabs/task-worklet",
