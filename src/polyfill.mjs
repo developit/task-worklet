@@ -11,5 +11,5 @@
  * limitations under the License.
  */
 
-import TaskWorklet from './index.mjs';
-self.TaskWorklet = TaskWorklet;
+import TaskQueue from './index.mjs';
+self.TaskQueue = TaskQueue;
