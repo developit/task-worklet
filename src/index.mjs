@@ -221,17 +221,22 @@ const workerUrl = URL.createObjectURL(new Blob(['(' + (() => {
     const api = {
       init(ident, worklets) {
         SPECIAL = ident;
-        if (Array.isArray(worklets)) worklets.forEach(api.eval);
+        return Promise.all((worklets || []).map(api.eval));
       },
       eval(code) {
         const descs = {};
-        realm(code, {
+        const waitFor = [];
+        const scope = {
+          $$taskworklet_wait(promise) {
+            waitFor.push(promise);
+          },
           registerTask(name, processor) {
             tasks[name] = processor;
             descs[name] = Object.assign({}, processor);
           },
-        });
-        return descs;
+        };
+        realm(code, scope);
+        return Promise.all(waitFor).then(() => descs);
       },
       task(id) {
         const data = [].slice.call(arguments);
@@ -348,6 +353,9 @@ class TaskQueuePool {
       tasks.push(value);
     });
 
+    // also wait for the worker to be loaded (async module resolution, etc)
+    tasksToResolve.push(worker.ready);
+
     Promise.all(tasksToResolve).then((taskValues) => {
       resultController.pending = false;
       if (resultController.cancelled) return;
@@ -357,10 +365,11 @@ class TaskQueuePool {
         task.$$taskIdentifier = SPECIAL + ':' + task.id;
       }
 
-      for (let i=taskValues.length; i--; ) {
+      for (let i=tasksToResolveIndices.length; i--; ) {
         const task = tasks[tasksToResolveIndices[i]];
         task.$$taskResult = taskValues[i];
       }
+
       let options = 0;
       // if we need a result right away, mark the task as requiring a return
       // value. This handles common cases like `await q.postTask().result`.
@@ -369,12 +378,12 @@ class TaskQueuePool {
       }
       worker.call('task', [task.id, options, taskName].concat(args));
     })
-      .then(() => {
-        for (const task of tasks) {
-          delete task.$$taskIdentifier;
-          delete task.$$taskResult;
-        }
-      });
+    .then(() => {
+      for (const task of tasks) {
+        delete task.$$taskIdentifier;
+        delete task.$$taskResult;
+      }
+    });
   }
 
   addWorklet(code) {
@@ -484,7 +493,7 @@ class TaskQueuePool {
       }
     });
     this.workers.push(worker);
-    worker.call('init', [SPECIAL, this.worklets]);
+    worker.ready = worker.call('init', [SPECIAL, this.worklets]);
     return worker;
   }
 
