@@ -8,7 +8,7 @@
   "module": "dist/task-worklet.mjs",
   "scripts": {
     "build": "microbundle -f umd,es && microbundle -f iife src/polyfill.mjs -o polyfill/index.js",
-    "test": "eslint \"{src,test}/**/*.test.{mjs,js}\" && karmatic"
+    "test": "eslint \"{src,test}/**/*.test.{mjs,js}\" && karmatic --no-headless"
   },
   "files": [
     "dist",
