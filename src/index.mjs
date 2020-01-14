@@ -394,7 +394,7 @@ class TaskQueuePool {
   // Cancellation isn't guaranteed, however cancellation of a task
   // known to have been already completed will return `false`.
   cancel(taskId) {
-    const task = this.tasks[tasksId];
+    const task = this.tasks[taskId];
     const resultController = this.results[taskId];
     if (resultController.completed || task.state==='completed') {
       return false;
