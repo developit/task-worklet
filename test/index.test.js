@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-import TaskQueue from '../src/index.mjs';
+import TaskQueue from '../src/index.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -25,13 +25,19 @@ describe('TaskQueue', () => {
 
     it('should be instantiable via a Blob URL', async () => {
       queue = new TaskQueue();
-      await queue.addModule(URL.createObjectURL(new Blob([`
+      await queue.addModule(
+        URL.createObjectURL(
+          new Blob([
+            `
         registerTask('add', class {
           process(a, b) {
             return a + b;
           }
         })
-      `])));
+      `
+          ])
+        )
+      );
     });
 
     it('should execute a single task', async () => {

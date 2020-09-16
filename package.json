@@ -10,7 +10,7 @@
     "build": "npm run -s build:main && npm run -s build:wtq",
     "build:main": "microbundle -f umd,es && microbundle -f iife src/polyfill.js -o polyfill/index.js",
     "build:wtq": "cd packages/worker-task-queue && npm run -s build",
-    "test": "eslint \"{src,test}/**/*.test.{mjs,js}\" && karmatic --no-headless"
+    "test": "eslint \"{src,test}/**/*.test.{mjs,js}\" && karmatic --no-coverage"
   },
   "files": [
     "dist",
