@@ -1,4 +1,5 @@
-/package-lock.json
-/node_modules
-/dist
+package-lock.json
+node_modules
+dist
 /polyfill
+/packages/worker-task-queue/processor
