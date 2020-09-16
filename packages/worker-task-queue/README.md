@@ -2,6 +2,8 @@
 
 This is a standalone implementation of the cooperative multithreading model from [Task Worklet](https://github.com/developit/task-worklet) as a zero-dependency library for Web and Node.
 
+**main thread code:**
+
 ```js
 import WorkerTaskQueue from 'worker-task-queue';
 
@@ -33,4 +35,31 @@ function demo(image) {
 }
 
 demo();
+```
+
+**worker code:**
+
+```js
+import { registerTask } from 'worker-task-queue/processor';
+
+registerTask('crop', class {
+  process(image, { box }) {
+    // complicated stuff in here
+    return image;
+  }
+});
+
+registerTask('resize', class {
+  process(image, { width, height }) {
+    // complicated stuff in here
+    return image;
+  }
+});
+
+registerTask('compress', class {
+  process(image, quality) {
+    // complicated stuff in here
+    return image;
+  }
+});
 ```
