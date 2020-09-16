@@ -1,0 +1,21 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": [
+      "webworker",
+      "es5"
+    ],
+    "module": "ESNext",
+    "target": "ESNext",
+    "allowJs": true,
+    "checkJs": true,
+    "moduleResolution": "node",
+    "noEmit": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "polyfill"
+  ]
+}

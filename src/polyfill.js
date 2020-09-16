@@ -11,5 +11,5 @@
  * limitations under the License.
  */
 
-import TaskQueue from './index.mjs';
+import TaskQueue from './index.js';
 self.TaskQueue = TaskQueue;
