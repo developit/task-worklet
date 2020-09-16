@@ -7,8 +7,8 @@
   "umd:main": "dist/task-worklet.js",
   "module": "dist/task-worklet.module.js",
   "scripts": {
-    "build": "microbundle -f umd,es && microbundle -f iife src/polyfill.mjs -o polyfill/index.js",
-    "test": "eslint \"{src,test}/**/*.test.{mjs,js}\" && karmatic --no-headless"
+    "build": "microbundle -f umd,es && microbundle -f iife src/polyfill.js -o polyfill/index.js",
+    "test": "eslint \"{src,test}/**/*.test.{mjs,js}\" && karmatic --no-coverage"
   },
   "files": [
     "dist",
