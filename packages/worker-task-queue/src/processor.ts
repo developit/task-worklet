@@ -43,13 +43,17 @@ export interface Result<T = any, E = string | Error> extends Promise<T> {
   error?: E;
 }
 
-export interface Processor<T = any> {
+export interface ProcessorConstructor {
   new (): Processor;
-  process(...args: any[]): T;
 }
 
-export function registerTask(name: string, processor: Processor) {
+export interface Processor {
+  process(...args: any[]): any;
+}
+
+export function registerTask(name: string, processor: ProcessorConstructor) {
   tasks[name] = processor;
+  // @ts-ignore-next we're copying properties off the class here.
   descs[name] = Object.assign({}, processor);
 }
 
@@ -63,11 +67,11 @@ const queue: TaskDesc[] = [];
 
 const results: Record<string, Result> = {};
 
-const tasks: Record<string, Processor> = {};
+const tasks: Record<string, ProcessorConstructor> = {};
 
-const descs: Record<string, Partial<Processor>> = {};
+const descs: Record<string, Partial<ProcessorConstructor>> = {};
 
-const instances: Record<string, InstanceType<Processor>> = {};
+const instances: Record<string, InstanceType<ProcessorConstructor>> = {};
 
 const cancellations: Record<number, boolean> = {};
 
@@ -167,7 +171,8 @@ let flushTimer: ReturnType<typeof setTimeout>;
 function next() {
   clearTimeout(flushTimer);
   if (queue.length === 0) {
-    flushTimer = setTimeout(flushResultStatuses, 50);
+    // flushTimer = setTimeout(flushResultStatuses, 50);
+    flushResultStatuses();
     return;
   }
 

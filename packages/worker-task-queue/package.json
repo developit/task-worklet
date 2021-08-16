@@ -2,17 +2,48 @@
   "name": "worker-task-queue",
   "version": "0.1.0",
   "description": "Streamlined processing of tasks in a shared threadpool.",
-  "module": "dist/worker-task-queue.module.js",
-  "main": "dist/worker-task-queue.js",
-  "umd:main": "dist/worker-task-queue.umd.js",
+  "exports": {
+    "./processor": {
+      "module": "./processor/index.mjs",
+      "import": "./processor/index.mjs",
+      "default": "./processor/index.js"
+    },
+    ".": {
+      "module": "./dist/worker-task-queue.mjs",
+      "import": "./dist/worker-task-queue.mjs",
+      "default": "./dist/worker-task-queue.js"
+    }
+  },
+  "module": "./dist/worker-task-queue.mjs",
+  "main": "./dist/worker-task-queue.js",
+  "umd:main": "./dist/worker-task-queue.umd.js",
   "scripts": {
-    "build": "microbundle src/index.ts -f es,cjs,umd && microbundle -f es,cjs,umd src/processor.ts -o processor/index.js"
+    "build": "microbundle src/index.ts -f es,cjs,umd && microbundle -f es,cjs,umd src/processor.ts -o processor/index.js",
+    "test": "../../node_modules/.bin/jest"
   },
   "files": [
     "dist",
     "processor",
     "src"
   ],
+  "babel": {
+    "env": {
+      "test": {
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "targets": {
+                "node": "current"
+              },
+              "modules": "commonjs"
+            }
+          ],
+          "@babel/preset-typescript"
+        ]
+      }
+    }
+  },
   "repository": "developit/task-worklet",
   "keywords": [
     "tasks",
@@ -27,5 +58,9 @@
   ],
   "author": "Jason Miller <developit@google.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/developit/task-worklet/packages/worker-task-queue"
+  "homepage": "https://github.com/developit/task-worklet/packages/worker-task-queue",
+  "devDependencies": {
+    "microbundle": "^0.13.3",
+    "web-worker": "^1.0.0"
+  }
 }

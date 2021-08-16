@@ -53,6 +53,10 @@ export default class WorkerTaskQueue {
     prop(task, '$$queue', this);
     return task;
   }
+
+  destroy() {
+    this.$$pool.destroy();
+  }
 }
 
 // export default WorkerTaskQueue;
@@ -129,6 +133,15 @@ class TaskQueuePool {
     this.tasks = {};
     this.results = {};
     this.workerTaskAssignments = {};
+  }
+
+  destroy() {
+    const tasks = this.tasks;
+    for (let id in tasks) {
+      this.cancel(id as any as number);
+    }
+    let worker;
+    while (worker = this.workers.pop()) worker.terminate();
   }
 
   exec<T = any>(task: Task<T>, taskName: string, args: any[]) {
@@ -401,11 +414,17 @@ class Task<T> {
 }
 Object.defineProperties(Task.prototype, {
   $$taskIdentifier: {
+    writable: true,
     enumerable: true
   },
-  $$result: {},
-  $$queue: {},
+  $$result: {
+    writable: true,
+  },
+  $$queue: {
+    writable: true,
+  },
   state: {
+    writable: true,
     value: 'pending'
   },
   result: {

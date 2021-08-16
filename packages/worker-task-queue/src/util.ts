@@ -39,11 +39,16 @@ export function walkReduce<T = any>(
 
 type Transferrables = ArrayBuffer | MessagePort | ImageBitmap;
 
+// This is done to support Node, which lacks ImageBitmap and sometimes MessagePort:
+function Never() {}
+const MessagePortConstructor = (typeof MessagePort === 'undefined' ? Never : MessagePort) as any as typeof MessagePort;
+const ImageBitmapConstructor = (typeof ImageBitmap === 'undefined' ? Never : ImageBitmap) as any as typeof ImageBitmap;
+
 export function collectTransferrables<T = any>(xfer: Transferrables[], value: T) {
   if (
     value instanceof ArrayBuffer ||
-    value instanceof MessagePort ||
-    value instanceof ImageBitmap
+    value instanceof MessagePortConstructor ||
+    value instanceof ImageBitmapConstructor
   ) {
     xfer.push(value);
   }
