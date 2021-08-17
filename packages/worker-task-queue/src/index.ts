@@ -11,9 +11,8 @@
  * limitations under the License.
  */
 
-interface TaskQueueOptions {
+interface TaskQueueOptions extends WorkerOptions {
   size?: number;
-  worker?: WorkerOptions;
 }
 
 type TaskId = number;
@@ -36,13 +35,14 @@ type TaskResultDesc = [TaskId, Status, any?];
 //   postTask<T>(taskName: string, ...args: any[]): Task<T>;
 // }
 
-export default class WorkerTaskQueue {
-  /** @private */
-  $$pool!: TaskQueuePool;
+interface WorkerTaskQueue {
+  $$pool: TaskQueuePool;
+}
 
+class WorkerTaskQueue {
   constructor(workerUrl: string, options?: TaskQueueOptions) {
     const size = (options && Number(options.size)) || 1;
-    const pool = new TaskQueuePool(size, workerUrl, options && options.worker);
+    const pool = new TaskQueuePool(size, workerUrl, options);
     prop(this, '$$pool', pool);
   }
 
@@ -58,6 +58,8 @@ export default class WorkerTaskQueue {
     this.$$pool.destroy();
   }
 }
+
+export default WorkerTaskQueue;
 
 // export default WorkerTaskQueue;
 
@@ -112,7 +114,7 @@ interface ResultController<T = any> extends PromiseController {
   result: Promise<T>;
 }
 
-class TaskQueuePool {
+interface TaskQueuePool {
   poolSize: number;
   workerUrl: string;
   workerOptions?: WorkerOptions;
@@ -120,7 +122,9 @@ class TaskQueuePool {
   tasks: Record<number, Task<any>>;
   results: Record<number, ResultController>;
   workerTaskAssignments: Record<TaskId, WorkerId>;
+}
 
+class TaskQueuePool {
   constructor(
     poolSize: number,
     workerUrl: string,
@@ -399,15 +403,17 @@ class TaskQueuePool {
   }
 }
 
+interface Task<T> {
+  id: number;
+  state: string;
+  result: T;
+
+  $$taskIdentifier: string;
+  $$result: Promise<T>;
+  $$queue: WorkerTaskQueue;
+}
+
 class Task<T> {
-  id!: number;
-  state!: string;
-  result!: T;
-
-  private $$taskIdentifier!: string;
-  private $$result!: Promise<T>;
-  private $$queue!: WorkerTaskQueue;
-
   cancel() {
     this.$$queue.$$pool.cancel(this.id);
   }
