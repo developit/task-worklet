@@ -1,5 +1,3 @@
-/* eslint-disable spaced-comment */
-
 /**
  * Copyright 2018 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -79,7 +77,7 @@ const workerUrl = URL.createObjectURL(
             const f = reducer(accumulator, obj, index, parent);
             if (f !== undefined) accumulator = f;
             if (typeof obj === 'object' && obj) {
-              for (let i in obj) {
+              for (const i in obj) {
                 walkReduce(obj[i], reducer, accumulator, i, obj);
               }
             }
@@ -201,9 +199,9 @@ const workerUrl = URL.createObjectURL(
               if (gotResults[i] == null) continue;
               resultCount++;
               const [id, options, state, data] = gotResults[i];
-              let status = [id, state];
+              const status = [id, state];
               // if requested, we'll return the result along with the status:
-              let returnResult = options & RETURN_RESULT;
+              const returnResult = options & RETURN_RESULT;
               // if there are any priority returns in the queue, drop low-priority returns as we switch modes:
               if (returnResult) priorityResultCount++;
 
@@ -327,7 +325,7 @@ let COUNT = 0;
 const SPECIAL = '$' + Math.random().toString(36).substring(2);
 
 function walkTaskArgs(obj, walker) {
-  for (let i in obj) {
+  for (const i in obj) {
     const value = obj[i];
     if (typeof value === 'object' && value) {
       if (value instanceof Task) {
@@ -565,7 +563,7 @@ class TaskQueuePool {
 
     for (const task of tasks) {
       const workerId = this.workerTaskAssignments[task.id];
-      let c = (usage[workerId] = (usage[workerId] || 0) + 1);
+      const c = (usage[workerId] = (usage[workerId] || 0) + 1);
       if (c > highest) {
         highest = c;
         best = workerId;
