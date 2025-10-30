@@ -16,6 +16,8 @@ In addition to ergonomics, the design of Task Worklet allows for an implicit dat
 
 First, install the script via `npm install task-worklet` or grab it from [unpkg](https://unpkg.com/task-worklet).
 
+### Browser Usage
+
 By default, the `task-worklet` ships as an npm module that exports the `TaskQueue` interface.
 
 If you'd prefer to "install" it as `window.TaskQueue`, go for `task-worklet/polyfill`:
@@ -23,6 +25,21 @@ If you'd prefer to "install" it as `window.TaskQueue`, go for `task-worklet/poly
 ```html
 <script src="https://unpkg.com/task-worklet/polyfill"></script>
 ```
+
+### Node.js Usage
+
+Task Worklet now works in Node.js (v10.5.0+) using worker_threads! Simply import and use it:
+
+```js
+const TaskQueue = require('task-worklet');
+// or with ES modules:
+import TaskQueue from 'task-worklet';
+
+const queue = new TaskQueue({ size: 2 });
+// Use exactly as you would in the browser!
+```
+
+### Basic Example
 
 Once you have it imported/installed, we can start interacting with the `TaskQueue`:
 
