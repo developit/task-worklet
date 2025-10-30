@@ -45,30 +45,11 @@ export default class TaskQueue {
 const workerCode =
   '(' +
   (() => {
-    // Node.js worker_threads compatibility layer
-    if (typeof self === 'undefined') {
-      // We're in Node.js worker_threads, not a Web Worker
+    // Minimal Node.js polyfills for browser-specific types
+    // web-worker handles the main APIs, but we need these for instanceof checks
+    if (typeof ImageBitmap === 'undefined') {
       // eslint-disable-next-line
-      const { parentPort, MessagePort } = require('worker_threads');
-      // eslint-disable-next-line
-      global.self = global;
-      // eslint-disable-next-line
-      global.MessagePort = MessagePort;
-      // eslint-disable-next-line
-      global.ImageBitmap = class ImageBitmap {}; // Dummy class for Node.js
-      // eslint-disable-next-line
-      global.postMessage = function(data, transferList) {
-        parentPort.postMessage(data, transferList);
-      };
-      // eslint-disable-next-line
-      global.addEventListener = function(event, handler) {
-        if (event === 'message') {
-          parentPort.on('message', function(data) {
-            // Wrap the message data in an event-like object for compatibility
-            handler({ data: data });
-          });
-        }
-      };
+      self.ImageBitmap = class ImageBitmap {};
     }
 
     // codepen hack (@todo remove me)

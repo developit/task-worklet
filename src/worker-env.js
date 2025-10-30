@@ -27,49 +27,34 @@ const isNode = typeof process !== 'undefined' && process.versions != null && pro
  * @returns {Worker} Worker instance
  */
 export function createWorker(codeBlob) {
+  // Get the code as a string
+  let code;
+  if (typeof codeBlob === 'string') {
+    code = codeBlob;
+  } else if (isBrowser && codeBlob instanceof Blob) {
+    // In browser with a Blob, create a URL
+    const url = URL.createObjectURL(codeBlob);
+    return new Worker(url);
+  } else {
+    code = String(codeBlob);
+  }
+
   if (isBrowser) {
-    // In browser, use native Worker API
-    if (codeBlob instanceof Blob) {
-      const url = URL.createObjectURL(codeBlob);
-      return new Worker(url);
-    } else if (typeof codeBlob === 'string') {
-      const blob = new Blob([codeBlob], { type: 'application/javascript' });
-      const url = URL.createObjectURL(blob);
-      return new Worker(url);
-    }
+    // In browser, create a blob from the code string
+    const blob = new Blob([code], { type: 'application/javascript' });
+    const url = URL.createObjectURL(blob);
+    return new Worker(url);
   }
 
   if (isNode) {
-    // In Node.js, use worker_threads
+    // In Node.js, use web-worker with data URL
     try {
-      const { Worker } = require('worker_threads');
-      const code = typeof codeBlob === 'string' ? codeBlob : String(codeBlob);
-
-      // worker_threads requires eval: true option for code strings
-      const worker = new Worker(code, { eval: true });
-
-      // Add Web Worker compatibility layer to Node.js Worker
-      // Convert worker.on('message') to worker.onmessage setter
-      Object.defineProperty(worker, 'onmessage', {
-        set: function(handler) {
-          if (handler) {
-            this.on('message', function(data) {
-              // Wrap the message in an event-like object
-              handler({ data: data });
-            });
-          }
-        }
-      });
-
-      // Override postMessage to match Web Worker signature
-      const originalPostMessage = worker.postMessage.bind(worker);
-      worker.postMessage = function(data, transferList) {
-        originalPostMessage(data, transferList);
-      };
-
-      return worker;
+      const WebWorker = require('web-worker');
+      // Use data URL - web-worker supports this!
+      const dataUrl = `data:text/javascript,${encodeURIComponent(code)}`;
+      return new WebWorker(dataUrl);
     } catch (e) {
-      throw new Error('worker_threads is required for Node.js environment. Make sure you are using Node.js 10.5.0 or higher. Error: ' + e.message);
+      throw new Error('web-worker package is required for Node.js environment. Install it with: npm install web-worker. Error: ' + e.message);
     }
   }
 
